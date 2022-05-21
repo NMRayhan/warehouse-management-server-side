@@ -21,7 +21,7 @@ async function run() {
     const productCollection = client.db("bicycleDB").collection("bicycles");
 
     // get product in home page
-    app.get("/product", async (req, res) => {
+    app.get("/products", async (req, res) => {
       const query = {};
       const cursor = productCollection.find(query);
       const result = await cursor.toArray();
@@ -34,6 +34,22 @@ async function run() {
         const result = await productCollection.insertOne(data);
         res.send(result);
       });
+
+    //details product
+    app.get('/product/details/:_id', async(req, res)=>{
+        const id = req.params._id;
+        const query = {_id: ObjectId(id)}
+        const result = await productCollection.findOne(query);
+        res.send(result)
+    })
+
+    // delete product by Admin 
+    app.delete('/product/:id', async(req, res)=>{
+        const id = req.params.id
+        const query = {_id: ObjectId(id)}
+        const result = await productCollection.deleteOne(query)
+        res.send(result)
+    })
   } finally {
     // await client.close()
   }
