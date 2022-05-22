@@ -24,7 +24,7 @@ async function run() {
     app.get("/products", async (req, res) => {
       const query = {};
       const cursor = productCollection.find(query);
-      const result = await cursor.toArray();
+      const result = await cursor.limit(6).toArray();
       res.send(result);
     });
 
