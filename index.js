@@ -76,6 +76,7 @@ async function run() {
       res.send(result);
     });
 
+    // update single product Quantity by admin 
     app.put("/product/quantity/update/:id", async (req, res) => {
       const id = req.params.id;
       const data = req.body;
@@ -89,6 +90,32 @@ async function run() {
           Short_Description: data.Short_Description,
           Price: data.Price,
           Quantity: (data.Quantity = data.Quantity - 1),
+          Supplier_Name: data.Supplier_Name,
+        },
+      };
+      const result = await productCollection.updateOne(
+        query,
+        updateDoc,
+        options
+      );
+      res.send(result);
+    });
+
+    // reStock single product Quantity by admin 
+    app.put("/product/quantity/reStock/:id/:quantity", async (req, res) => {
+      const id = req.params.id;
+      const newQuantity = req.params.quantity
+      const data = req.body;
+      const query = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          Admin_email: data.Admin_email,
+          Product_Name: data.Product_Name,
+          Product_Image_URL: data.Product_Image_URL,
+          Short_Description: data.Short_Description,
+          Price: data.Price,
+          Quantity: newQuantity,
           Supplier_Name: data.Supplier_Name,
         },
       };
