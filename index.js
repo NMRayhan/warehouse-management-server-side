@@ -34,7 +34,7 @@ async function run() {
       const result = await productCollection.insertOne(data);
       res.send(result);
     });
-    
+
     //details product
     app.get("/product/details/:_id", async (req, res) => {
       const id = req.params._id;
@@ -76,7 +76,7 @@ async function run() {
       res.send(result);
     });
 
-    // update single product Quantity by admin 
+    // update single product Quantity by admin
     app.put("/product/quantity/update/:id", async (req, res) => {
       const id = req.params.id;
       const data = req.body;
@@ -101,10 +101,10 @@ async function run() {
       res.send(result);
     });
 
-    // reStock single product Quantity by admin 
+    // reStock single product Quantity by admin
     app.put("/product/quantity/reStock/:id/:quantity", async (req, res) => {
       const id = req.params.id;
-      const newQuantity = req.params.quantity
+      const newQuantity = req.params.quantity;
       const data = req.body;
       const query = { _id: ObjectId(id) };
       const options = { upsert: true };
@@ -124,6 +124,14 @@ async function run() {
         updateDoc,
         options
       );
+      res.send(result);
+    });
+
+    app.get("/myAdded/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { Admin_email: email };
+      const cursor = productCollection.find(query)
+      const result = await cursor.toArray();
       res.send(result);
     });
   } finally {
