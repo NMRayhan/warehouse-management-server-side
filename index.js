@@ -34,7 +34,7 @@ async function run() {
       const result = await productCollection.insertOne(data);
       res.send(result);
     });
-
+    
     //details product
     app.get("/product/details/:_id", async (req, res) => {
       const id = req.params._id;
