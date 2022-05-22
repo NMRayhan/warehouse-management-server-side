@@ -30,36 +30,81 @@ async function run() {
 
     //add product by Admin
     app.post("/addProduct", async (req, res) => {
-        const data = req.body;
-        const result = await productCollection.insertOne(data);
-        res.send(result);
-      });
+      const data = req.body;
+      const result = await productCollection.insertOne(data);
+      res.send(result);
+    });
 
     //details product
-    app.get('/product/details/:_id', async(req, res)=>{
-        const id = req.params._id;
-        const query = {_id: ObjectId(id)}
-        const result = await productCollection.findOne(query);
-        res.send(result)
-    })
+    app.get("/product/details/:_id", async (req, res) => {
+      const id = req.params._id;
+      const query = { _id: ObjectId(id) };
+      const result = await productCollection.findOne(query);
+      res.send(result);
+    });
 
-    // delete product by Admin 
-    app.delete('/product/:id', async(req, res)=>{
-        const id = req.params.id
-        const query = {_id: ObjectId(id)}
-        const result = await productCollection.deleteOne(query)
-        res.send(result)
-    })
+    // delete product by Admin
+    app.delete("/product/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await productCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    //update single Product
+    app.put("/product/update/:id", async (req, res) => {
+      const id = req.params.id;
+      const data = req.body;
+      const query = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          Admin_email: data.Admin_email,
+          Product_Name: data.Product_Name,
+          Product_Image_URL: data.Product_Image_URL,
+          Short_Description: data.Short_Description,
+          Price: data.Price,
+          Quantity: data.Quantity,
+          Supplier_Name: data.Supplier_Name,
+        },
+      };
+      const result = await productCollection.updateOne(
+        query,
+        updateDoc,
+        options
+      );
+      res.send(result);
+    });
+
+    app.put("/product/quantity/update/:id", async (req, res) => {
+      const id = req.params.id;
+      const data = req.body;
+      const query = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          Admin_email: data.Admin_email,
+          Product_Name: data.Product_Name,
+          Product_Image_URL: data.Product_Image_URL,
+          Short_Description: data.Short_Description,
+          Price: data.Price,
+          Quantity: (data.Quantity = data.Quantity - 1),
+          Supplier_Name: data.Supplier_Name,
+        },
+      };
+      const result = await productCollection.updateOne(
+        query,
+        updateDoc,
+        options
+      );
+      res.send(result);
+    });
   } finally {
     // await client.close()
   }
 }
 
 run().catch(console.dir);
-
-app.get("/hello", async (req, res) => {
-  res.send("Hello from Warehouse");
-});
 
 app.listen(port, () => {
   console.log("Listening from", port);
